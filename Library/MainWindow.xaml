@@ -11,7 +11,7 @@
         <TabControl>
             <TabItem Name="Konyvek" Header="Könyvek">
                 <DockPanel>
-                    <DataGrid x:Name="Konyv" SelectionChanged="Konyv_SelectionChanged">
+                    <DataGrid x:Name="Konyv" SelectionChanged="Konyv_SelectionChanged" Loaded="Konyvek_Loaded">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="KönyvId">
                             </DataGridTextColumn>
@@ -24,7 +24,7 @@
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="Tagok" Header="Tagok">
+            <TabItem Name="Tagok" Header="Tagok" Loaded="Tagok_Loaded">
                 <DockPanel>
                     <DataGrid x:Name="Tag">
                         <DataGrid.Columns>
@@ -39,7 +39,7 @@
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="Kolcsonzes" Header="Kölcsönzés">
+            <TabItem Name="Kolcsonzes" Header="Kölcsönzés" Loaded="Kolcsonzes_Loaded">
                 <DockPanel>
                     <DataGrid x:Name="Kolcson">
                         <DataGrid.Columns>

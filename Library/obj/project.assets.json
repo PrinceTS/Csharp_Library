@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Disk Third\\Programming\\0\\VisualStudio\\Library\\Library\\Library.csproj",
+      "projectUniqueName": "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\Library.csproj",
       "projectName": "Library",
-      "projectPath": "D:\\Disk Third\\Programming\\0\\VisualStudio\\Library\\Library\\Library.csproj",
+      "projectPath": "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\Library.csproj",
       "packagesPath": "C:\\Users\\szabo\\.nuget\\packages\\",
-      "outputPath": "D:\\Disk Third\\Programming\\0\\VisualStudio\\Library\\Library\\obj\\",
+      "outputPath": "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\szabo\\AppData\\Roaming\\NuGet\\NuGet.Config",
