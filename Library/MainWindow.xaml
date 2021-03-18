@@ -1,0 +1,59 @@
+﻿<Window x:Class="Library.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Library"
+        mc:Ignorable="d"
+        Title="Library" Height="600" Width="800">
+    <Grid>
+
+        <TabControl>
+            <TabItem Name="Konyvek" Header="Könyvek">
+                <DockPanel>
+                    <DataGrid x:Name="Konyv" SelectionChanged="Konyv_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="KönyvId">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Szerző"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Könyv Cime"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Kiadás éve"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Kiadó"></DataGridTextColumn>
+                            <DataGridTextColumn Header="True"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Name="Tagok" Header="Tagok">
+                <DockPanel>
+                    <DataGrid x:Name="Tag">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Olvasod">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Név"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Szül dátum"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Irányitószám"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Település"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Utca/házszám"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Name="Kolcsonzes" Header="Kölcsönzés">
+                <DockPanel>
+                    <DataGrid x:Name="Kolcson">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="KölcsönzésId">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Olvasod"></DataGridTextColumn>
+                            <DataGridTextColumn Header="KönyvId"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Kölcsönzés dátuma"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Visszavétel dátuma"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
