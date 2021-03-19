@@ -5,50 +5,81 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Library"
         mc:Ignorable="d"
-        Title="Library" Height="600" Width="800">
+        Title="Library" Height="600" Width="800"
+        Background="#333333"
+        >
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <TabControl>
-            <TabItem Name="Konyvek" Header="Könyvek">
+        <TabControl Background="#333333" Grid.Row="0" Grid.Column="0">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Grid Name="Panel">
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="Panel" Property="Background" Value="White" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Name="BooksTab" Header="Books" Background="#333333">
+
                 <DockPanel>
-                    <DataGrid x:Name="Konyv" SelectionChanged="Konyv_SelectionChanged" Loaded="Konyvek_Loaded">
+                    <DataGrid x:Name="BooksDataGrid" Loaded="Load_BookData">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="KönyvId">
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Szerző"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Könyv Cime"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Kiadás éve"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Kiadó"></DataGridTextColumn>
-                            <DataGridTextColumn Header="True"></DataGridTextColumn>
+                            <DataGridTextColumn Header="IdentificationNumber" Binding="{Binding bookID}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Author" Binding="{Binding bookAuthor}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Title" Binding="{Binding bookTitle}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Published" Binding="{Binding bookPublished}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Publisher" Binding="{Binding bookPublisher}"></DataGridTextColumn>
+                            <DataGridCheckBoxColumn Header="Igen" Binding="{Binding bookBoolean}"></DataGridCheckBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="Tagok" Header="Tagok" Loaded="Tagok_Loaded">
+            <TabItem Name="MembersTab" Header="Members" Loaded="Load_MembersData">
                 <DockPanel>
-                    <DataGrid x:Name="Tag">
+                    <DataGrid x:Name="MembersDataGrid">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Olvasod">
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Név"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Szül dátum"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Irányitószám"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Település"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Utca/házszám"></DataGridTextColumn>
+                            <DataGridTextColumn Header="MemberID" Binding="{Binding memberID}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Name" Binding="{Binding name}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="BirthDate" Binding="{Binding birthDate}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="ZipCode" Binding="{Binding zipCode}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="City" Binding="{Binding city}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="StreetAddress" Binding="{Binding streetAddress}"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-            <TabItem Name="Kolcsonzes" Header="Kölcsönzés" Loaded="Kolcsonzes_Loaded">
+            <TabItem Name="RentalsTab" Header="Rental" Loaded="Load_RentalsData">
                 <DockPanel>
-                    <DataGrid x:Name="Kolcson">
+                    <DataGrid x:Name="RentalsDataGrid">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="KölcsönzésId">
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Olvasod"></DataGridTextColumn>
-                            <DataGridTextColumn Header="KönyvId"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Kölcsönzés dátuma"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Visszavétel dátuma"></DataGridTextColumn>
+                            <DataGridTextColumn Header="KölcsönzésId" Binding="{Binding rentalID}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Olvasod" Binding="{Binding memberID}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="KönyvId" Binding="{Binding bookID}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Kölcsönzés dátuma" Binding="{Binding rentalDateStart}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Visszavétel dátuma" Binding="{Binding rentalDateEnd}"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

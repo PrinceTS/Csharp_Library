@@ -18,111 +18,100 @@ namespace Library
 {
     public partial class MainWindow : Window
     {
-        List<Adatok> l = new List<Adatok>();
-        List<adat2> l2 = new List<adat2>();
-        List<Feladat> l3 = new List<Feladat>();
+        List<BooksData> booksDataList = new List<BooksData>();
+        List<MembersData> membersDataList = new List<MembersData>();
+        List<RentalsData> rentalsDataList = new List<RentalsData>();
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        class Adatok
+        class BooksData
         {
-            public int id { get; set; }
-            public string szerzo { get; set; }
-            public string cim { get; set; }
-            public string ev { get; set; }
-            public string kiado { get; set; }
-            public bool ig { get; set; }
-            public Adatok(string sor)
+            public int bookID { get; set; }
+            public string bookAuthor { get; set; }
+            public string bookTitle { get; set; }
+            public string bookPublished { get; set; }
+            public string bookPublisher { get; set; }
+            public bool bookBoolean { get; set; }
+            public BooksData(string line)
             {
-                string[] resz = sor.Split(';');
-                id = Convert.ToInt32(resz[0]);
-                szerzo = resz[1];
-                cim = resz[2];
-                ev = resz[3];
-                kiado = resz[4];
-                ig = Convert.ToBoolean(resz[5]);
-
+                string[] lineParts = line.Split(';');
+                bookID = Convert.ToInt32(lineParts[0]);
+                bookAuthor = lineParts[1];
+                bookTitle = lineParts[2];
+                bookPublished = lineParts[3];
+                bookPublisher = lineParts[4];
+                bookBoolean = Convert.ToBoolean(lineParts[5]);
             }
         }
 
-        class adat2
+        class MembersData
         {
-            public int olvasid { get; set; }
-            public string nev { get; set; }
-            public DateTime szul { get; set; }
-            public int szam { get; set; }
-            public string telepules { get; set; }
-            public string utca { get; set; }
-            public adat2(string sor)
+            public int memberID { get; set; }
+            public string name { get; set; }
+            public DateTime birthDate { get; set; }
+            public int zipCode { get; set; }
+            public string city { get; set; }
+            public string streetAddress { get; set; }
+            public MembersData(string line)
             {
-                string[] resz = sor.Split(';');
-                olvasid = Convert.ToInt32(resz[0]);
-                nev = resz[1];
-                szul = Convert.ToDateTime(resz[2]);
-                szam = Convert.ToInt32(resz[3]);
-                telepules = resz[4];
-                utca = resz[5];
-
-
+                string[] lineParts = line.Split(';');
+                memberID = Convert.ToInt32(lineParts[0]);
+                name = lineParts[1];
+                birthDate = Convert.ToDateTime(lineParts[2]);
+                zipCode = Convert.ToInt32(lineParts[3]);
+                city = lineParts[4];
+                streetAddress = lineParts[5];
             }
         }
 
-        class Feladat
+        class RentalsData
         {
-            public int kolcsonid { get; set; }
-            public int olvasid { get; set; }
-            public int konyvid { get; set; }
-            public DateTime koldatum { get; set; }
-            public DateTime visszdatum { get; set; }
-            public Feladat(string sor)
+            public int rentalID { get; set; }
+            public int memberID { get; set; }
+            public int bookID { get; set; }
+            public DateTime rentalDateStart { get; set; }
+            public DateTime rentalDateEnd { get; set; }
+            public RentalsData(string line)
             {
-                string[] resz = sor.Split(';');
-                kolcsonid = Convert.ToInt32(resz[0]);
-                olvasid = Convert.ToInt32(resz[1]);
-                konyvid = Convert.ToInt32(resz[2]);
-                koldatum = Convert.ToDateTime(resz[3]);
-                visszdatum = Convert.ToDateTime(resz[3]);
+                string[] lineParts = line.Split(';');
+                rentalID = Convert.ToInt32(lineParts[0]);
+                memberID = Convert.ToInt32(lineParts[1]);
+                bookID = Convert.ToInt32(lineParts[2]);
+                rentalDateStart = Convert.ToDateTime(lineParts[3]);
+                rentalDateEnd = Convert.ToDateTime(lineParts[3]);
             }
         }
 
-        private void Konyvek_Loaded(object sender, RoutedEventArgs e)
+        private void Load_BookData(object sender, RoutedEventArgs e)
         {
+            BooksDataGrid.AutoGenerateColumns = false;
             foreach (var item in File.ReadAllLines("konyvek.txt"))
             {
-                l.Add(new Adatok(item));
+                booksDataList.Add(new BooksData(item));
             }
-            Konyv.ItemsSource = l;
-
-            Konyv.AutoGenerateColumns = false;
+            BooksDataGrid.ItemsSource = booksDataList;   
         }
 
-        private void Tagok_Loaded(object sender, RoutedEventArgs e)
+        private void Load_MembersData(object sender, RoutedEventArgs e)
         {
+            MembersDataGrid.AutoGenerateColumns = false;
             foreach (var item in File.ReadAllLines("tagok.txt"))
             {
-                l2.Add(new adat2(item));
-
-
+                membersDataList.Add(new MembersData(item));
             }
-            Tag.ItemsSource = l2;
-            Tag.AutoGenerateColumns = false;
+            MembersDataGrid.ItemsSource = membersDataList;
         }
 
-        private void Kolcsonzes_Loaded(object sender, RoutedEventArgs e)
+        private void Load_RentalsData(object sender, RoutedEventArgs e)
         {
+            RentalsDataGrid.AutoGenerateColumns = false;
             foreach (var item in File.ReadAllLines("kolcsonzesek.txt"))
             {
-                l3.Add(new Feladat(item));
+                rentalsDataList.Add(new RentalsData(item));
             }
-            Kolcson.ItemsSource = l3;
-            Kolcson.AutoGenerateColumns = false;
-        }
-
-        private void Konyv_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            RentalsDataGrid.ItemsSource = rentalsDataList;
         }
     }
 }
