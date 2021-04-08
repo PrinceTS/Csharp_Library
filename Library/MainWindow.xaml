@@ -11,12 +11,18 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
 
-        <TabControl Background="#333333" Grid.Row="0" Grid.Column="0">
+        <TabControl Background="#333333" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="6">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -45,7 +51,7 @@
             <TabItem Name="BooksTab" Header="Books" Background="#333333">
 
                 <DockPanel>
-                    <DataGrid x:Name="BooksDataGrid" Loaded="Load_BookData">
+                    <DataGrid x:Name="BooksDataGrid" Loaded="Load_BookData" Grid.Column="0">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="IdentificationNumber" Binding="{Binding bookID}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Author" Binding="{Binding bookAuthor}"></DataGridTextColumn>
@@ -55,6 +61,8 @@
                             <DataGridCheckBoxColumn Header="Igen" Binding="{Binding bookBoolean}"></DataGridCheckBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <TextBox Text="ASD" Foreground="Blue" Background="Wheat" Width="200px" Height="50" Grid.Column="1" Grid.Row="3"/>
+                    <TextBox Text="ASD" Foreground="Blue" Background="Wheat" Width="200px" Height="50" Grid.Column="1" Grid.Row="4"/>
                 </DockPanel>
             </TabItem>
             <TabItem Name="MembersTab" Header="Members" Loaded="Load_MembersData">
