@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\Library.csproj": {}
+    "D:\\Disk Third\\Github\\Csharp_Library\\Library\\Library.csproj": {}
   },
   "projects": {
-    "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\Library.csproj": {
+    "D:\\Disk Third\\Github\\Csharp_Library\\Library\\Library.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\Library.csproj",
+        "projectUniqueName": "D:\\Disk Third\\Github\\Csharp_Library\\Library\\Library.csproj",
         "projectName": "Library",
-        "projectPath": "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\Library.csproj",
+        "projectPath": "D:\\Disk Third\\Github\\Csharp_Library\\Library\\Library.csproj",
         "packagesPath": "C:\\Users\\szabo\\.nuget\\packages\\",
-        "outputPath": "D:\\Disk Third\\Git\\Csharp_Library\\Csharp_Library\\Library\\obj\\",
+        "outputPath": "D:\\Disk Third\\Github\\Csharp_Library\\Library\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "E:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
           "C:\\Users\\szabo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,7 +61,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
