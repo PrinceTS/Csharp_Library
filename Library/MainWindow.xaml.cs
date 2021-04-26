@@ -1,117 +1,348 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace Library
 {
+    public class Book
+    {
+        uint _ID;
+        public uint ID { get => _ID; }
+
+        string _author;
+        public string Szerző { get => _author; }
+
+        string _title;
+        public string Cím { get => _title; }
+
+        string _releaseYear;
+        public string KiadásÉve { get => _releaseYear; }
+
+        string _publisher;
+        public string Kiadó { get => _publisher; }
+
+        public bool Kölcsönözhető { get => _isBorrowable; }
+        bool _isBorrowable;
+
+        public Book(string line)
+        {
+            string[] separatedLine = line.Split(';');
+
+            _ID = Convert.ToUInt32(separatedLine[0]);
+            _author = separatedLine[1];
+            _title = separatedLine[2];
+            _releaseYear = separatedLine[3];
+            _publisher = separatedLine[4];
+            _isBorrowable = Convert.ToBoolean(separatedLine[5]);
+        }
+    }
+
+    public class Member
+    {
+        uint _ID;
+        public uint ID { get => _ID; }
+        string _name;
+        public string Név { get => _name; }
+        string _address;
+        public string Lakcím { get => _address; }
+
+        public Member(string line)
+        {
+            string[] separatedLine = line.Split(';');
+
+            _ID = Convert.ToUInt32(separatedLine[0]);
+            _name = separatedLine[1];
+            _address = string.Join(", ", separatedLine.Skip(2));
+        }
+    }
+
+    public class Borrow
+    {
+        uint _ID;
+        public uint ID { get => _ID; }
+        uint _borrowerID;
+        public uint TagID { get => _borrowerID; }
+        uint _bookID;
+        public uint KönyvID { get => _bookID; }
+        DateTime _borrowDate;
+        public DateTime KölcsönzésDátuma { get => _borrowDate; }
+        DateTime? _returnDate;
+        public DateTime? KölcsönzésVisszavétele { get => _returnDate; }
+
+        public Borrow(string line)
+        {
+            string[] separatedLine = line.Split(';');
+
+            _ID = Convert.ToUInt32(separatedLine[0]);
+            _borrowerID = Convert.ToUInt32(separatedLine[1]);
+            _bookID = Convert.ToUInt32(separatedLine[2]);
+            _borrowDate = DateTime.ParseExact(separatedLine[3], "yyyy.MM.dd.", null);
+            if (separatedLine[4] != "")
+                _returnDate = DateTime.ParseExact(separatedLine[4], "yyyy.MM.dd.", null);
+            else
+                _returnDate = null;
+        }
+    }
+
     public partial class MainWindow : Window
     {
-        List<BooksData> booksDataList = new List<BooksData>();
-        List<MembersData> membersDataList = new List<MembersData>();
-        List<RentalsData> rentalsDataList = new List<RentalsData>();
+
+        public string[] PathsToData = new string[3];
+
+        public BindingList<Book> Books = new BindingList<Book>();
+        public BindingList<Member> Members = new BindingList<Member>();
+        public List<Borrow> Borrows = new List<Borrow>();
+        public BindingList<Borrow> DisplayedBorrows = new BindingList<Borrow>();
+
         public MainWindow()
         {
             InitializeComponent();
+
+            OpenFileDialog fileDialog = new OpenFileDialog()
+            {
+                Filter = "Könyvtár Állományok (*.txt)|*.txt",
+                RestoreDirectory = true
+            };
+            PathsToData[0] = "konyvek.txt";
+            MessageBox.Show(PathsToData[0]);
+            PathsToData[1] = "tagok.txt";
+            PathsToData[2] = "kolcsonzesek.txt";
+
+            string[] input = File.ReadAllLines(PathsToData[0]);
+            foreach (string i in input)
+            {
+                if (i.Trim() == "") continue;
+                Books.Add(new Book(i));
+            }
+
+
+            input = File.ReadAllLines(PathsToData[1]);
+            foreach (string i in input)
+            {
+                if (i.Trim() == "") continue;
+                Members.Add(new Member(i));
+            }
+
+
+            input = File.ReadAllLines(PathsToData[2]);
+            foreach (string i in input)
+            {
+                if (i.Trim() == "") continue;
+                Borrows.Add(new Borrow(i));
+            }
+
+            BookDataGrid.ItemsSource = Books;
+            MemberDataGrid.ItemsSource = Members;
+            BorrowDataGrid.ItemsSource = DisplayedBorrows;
+
+            Borrows.ForEach(x => DisplayedBorrows.Add(x));
         }
 
-        class BooksData
+        /* Könyv fül*/
+        private void BookDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            public int bookID { get; set; }
-            public string bookAuthor { get; set; }
-            public string bookTitle { get; set; }
-            public string bookPublished { get; set; }
-            public string bookPublisher { get; set; }
-            public bool bookBoolean { get; set; }
-            public BooksData(string line)
+            BookFillFields(BookDataGrid.SelectedIndex);
+        }
+
+        void BookFillFields(int index)
+        {
+            if (index == -1) return;
+
+            if (!AuthorField.IsEnabled)
             {
-                string[] lineParts = line.Split(';');
-                bookID = Convert.ToInt32(lineParts[0]);
-                bookAuthor = lineParts[1];
-                bookTitle = lineParts[2];
-                bookPublished = lineParts[3];
-                bookPublisher = lineParts[4];
-                bookBoolean = Convert.ToBoolean(lineParts[5]);
+                AuthorField.IsEnabled = true;
+                TitleField.IsEnabled = true;
+                ReleaseYearField.IsEnabled = true;
+                PublisherField.IsEnabled = true;
+                BorrowableCheck.IsEnabled = true;
+            }
+
+
+            IDField.Text = Books[index].ID.ToString();
+            AuthorField.Text = Books[index].Szerző;
+            TitleField.Text = Books[index].Cím;
+            ReleaseYearField.Text = Books[index].KiadásÉve;
+            PublisherField.Text = Books[index].Kiadó;
+            BorrowableCheck.IsChecked = Books[index].Kölcsönözhető;
+        }
+
+        private void NewBookButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!AuthorField.IsEnabled) //Mivel egyszerre tesszük módosíthatóvá a mezőket ezért egyet elég leellenőrizni hogy engedélyezve van-e
+            {
+                AuthorField.IsEnabled = true;
+                TitleField.IsEnabled = true;
+                ReleaseYearField.IsEnabled = true;
+                PublisherField.IsEnabled = true;
+                BorrowableCheck.IsEnabled = true;
+            }
+
+            IDField.Text = (Books[Books.Count - 1].ID + 1).ToString();
+            AuthorField.Text = "";
+            TitleField.Text = "";
+            ReleaseYearField.Text = "";
+            PublisherField.Text = "";
+            BorrowableCheck.IsChecked = false;
+        }
+
+        private void BookSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            int bookEntryID = Books.ToList().FindIndex(x => x.ID == int.Parse(IDField.Text));
+
+            string borrowableString = BorrowableCheck.IsChecked.ToString().ToUpper()[0] + BorrowableCheck.IsChecked.ToString().Substring(1);
+            string newLine = $"\n{IDField.Text};{AuthorField.Text};{TitleField.Text};{ReleaseYearField.Text};{PublisherField.Text};{borrowableString}";
+            if (bookEntryID == -1)
+            {
+                File.AppendAllText(PathsToData[0], newLine);
+                Books.Add(new Book(newLine));
+            }
+            else
+            {
+                Books[bookEntryID] = new Book(newLine);
+            }
+
+        }
+
+        private void BookDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int bookEntryID = Books.ToList().FindIndex(x => x.ID == int.Parse(IDField.Text));
+            if (bookEntryID != -1)
+            {
+                Books.RemoveAt(bookEntryID);
+                List<string> currentFile = File.ReadAllLines(PathsToData[0]).ToList();
+                currentFile.RemoveAt(bookEntryID);
+                File.WriteAllLines(PathsToData[0], currentFile);
             }
         }
 
-        class MembersData
+        /* Tagok fül */
+
+        void MemberFillFields(int index)
         {
-            public int memberID { get; set; }
-            public string name { get; set; }
-            public DateTime birthDate { get; set; }
-            public int zipCode { get; set; }
-            public string city { get; set; }
-            public string streetAddress { get; set; }
-            public MembersData(string line)
+            if (index == -1) return;
+
+            if (!MemberNameField.IsEnabled)
             {
-                string[] lineParts = line.Split(';');
-                memberID = Convert.ToInt32(lineParts[0]);
-                name = lineParts[1];
-                birthDate = Convert.ToDateTime(lineParts[2]);
-                zipCode = Convert.ToInt32(lineParts[3]);
-                city = lineParts[4];
-                streetAddress = lineParts[5];
+                MemberNameField.IsEnabled = true;
+                MemberAddressField.IsEnabled = true;
+            }
+
+            MemberIDField.Text = Members[index].ID.ToString();
+            MemberNameField.Text = Members[index].Név;
+            MemberAddressField.Text = Members[index].Lakcím;
+
+            MemberBorrowedBooksGrid.ItemsSource = Borrows.Where(x => x.TagID == Members[index].ID);
+        }
+
+        private void MemberDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            MemberFillFields(MemberDataGrid.SelectedIndex);
+        }
+
+        private void NewMemberButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!MemberNameField.IsEnabled)
+            {
+                MemberNameField.IsEnabled = true;
+                MemberAddressField.IsEnabled = true;
+            }
+
+            MemberIDField.Text = (Members[Members.Count - 1].ID + 1).ToString();
+            MemberNameField.Text = "";
+            MemberAddressField.Text = "";
+        }
+
+        private void MemberDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int memberEntryID = Members.ToList().FindIndex(x => x.ID == int.Parse(MemberIDField.Text));
+            if (memberEntryID != -1)
+            {
+                Members.RemoveAt(memberEntryID);
+                List<string> currentFile = File.ReadAllLines(PathsToData[1]).ToList();
+                currentFile.RemoveAt(memberEntryID);
+                File.WriteAllLines(PathsToData[1], currentFile);
             }
         }
 
-        class RentalsData
+        private void MemberSaveButton_Click(object sender, RoutedEventArgs e)
         {
-            public int rentalID { get; set; }
-            public int memberID { get; set; }
-            public int bookID { get; set; }
-            public DateTime rentalDateStart { get; set; }
-            public DateTime rentalDateEnd { get; set; }
-            public RentalsData(string line)
+            int memberEntryID = Members.ToList().FindIndex(x => x.ID == int.Parse(MemberIDField.Text));
+
+            string newLine = $"\n{MemberIDField.Text};{MemberNameField.Text};{MemberAddressField.Text.Replace(", ", ";")}";
+            if (memberEntryID == -1)
             {
-                string[] lineParts = line.Split(';');
-                rentalID = Convert.ToInt32(lineParts[0]);
-                memberID = Convert.ToInt32(lineParts[1]);
-                bookID = Convert.ToInt32(lineParts[2]);
-                rentalDateStart = Convert.ToDateTime(lineParts[3]);
-                rentalDateEnd = Convert.ToDateTime(lineParts[3]);
+                File.AppendAllText(PathsToData[1], newLine);
+                Members.Add(new Member(newLine));
+            }
+            else
+            {
+                Members[memberEntryID] = new Member(newLine);
             }
         }
 
-        private void Load_BookData(object sender, RoutedEventArgs e)
+        /* Kölcsönzések fül */
+
+        private void BorrowSearchButton_Click(object sender, RoutedEventArgs e)
         {
-            BooksDataGrid.AutoGenerateColumns = false;
-            foreach (var item in File.ReadAllLines("konyvek.txt"))
+            List<Borrow> foundResults = new List<Borrow>();
+            List<Book> searchedBooks = Books.Where(x => x.Szerző.ToLower().StartsWith(BorrowSearchAuthorField.Text.ToLower())).ToList();
+            searchedBooks = searchedBooks.Intersect(Books.Where(x => x.Cím.ToLower().StartsWith(BorrowSearchTitleField.Text.ToLower())), new BorrowEquality()).ToList();
+            List<Member> searchedMembers = Members.Where(x => x.Név.ToLower().StartsWith(BorrowSearchMemberField.Text.ToLower())).ToList();
+
+            foundResults = Borrows.Where(x => searchedBooks.Exists(y => y.ID == x.KönyvID)).ToList();
+            foundResults = foundResults.Where(x => searchedMembers.Exists(y => y.ID == x.TagID)).ToList();
+
+            if ((bool)OnlyExpiredCheck.IsChecked)
             {
-                booksDataList.Add(new BooksData(item));
+                foundResults = foundResults.Where(x => x.KölcsönzésVisszavétele == null && (DateTime.Now - x.KölcsönzésDátuma).TotalDays > 30).ToList();
             }
-            BooksDataGrid.ItemsSource = booksDataList;   
+
+            DisplayedBorrows.Clear();
+            foundResults.ForEach(x => DisplayedBorrows.Add(x));
         }
 
-        private void Load_MembersData(object sender, RoutedEventArgs e)
+        class BorrowEquality : IEqualityComparer<Book>
         {
-            MembersDataGrid.AutoGenerateColumns = false;
-            foreach (var item in File.ReadAllLines("tagok.txt"))
-            {
-                membersDataList.Add(new MembersData(item));
-            }
-            MembersDataGrid.ItemsSource = membersDataList;
-        }
+            public bool Equals(Book b1, Book b2) => b1.ID == b2.ID;
 
-        private void Load_RentalsData(object sender, RoutedEventArgs e)
-        {
-            RentalsDataGrid.AutoGenerateColumns = false;
-            foreach (var item in File.ReadAllLines("kolcsonzesek.txt"))
-            {
-                rentalsDataList.Add(new RentalsData(item));
-            }
-            RentalsDataGrid.ItemsSource = rentalsDataList;
+            public int GetHashCode(Book book) => book.GetHashCode();
+
         }
     }
 }
+
+//private void Load_BookData(object sender, RoutedEventArgs e)
+//        {
+//            BooksDataGrid.AutoGenerateColumns = false;
+//            foreach (var item in File.ReadAllLines("konyvek.txt"))
+//            {
+//                booksDataList.Add(new BooksData(item));
+//            }
+//            BooksDataGrid.ItemsSource = booksDataList;   
+//        }
+
+//        private void Load_MembersData(object sender, RoutedEventArgs e)
+//        {
+//            MembersDataGrid.AutoGenerateColumns = false;
+//            foreach (var item in File.ReadAllLines("tagok.txt"))
+//            {
+//                membersDataList.Add(new MembersData(item));
+//            }
+//            MembersDataGrid.ItemsSource = membersDataList;
+//        }
+
+//        private void Load_RentalsData(object sender, RoutedEventArgs e)
+//        {
+//            RentalsDataGrid.AutoGenerateColumns = false;
+//            foreach (var item in File.ReadAllLines("kolcsonzesek.txt"))
+//            {
+//                rentalsDataList.Add(new RentalsData(item));
+//            }
+//            RentalsDataGrid.ItemsSource = rentalsDataList;
+//        }
+//    }
+//}
